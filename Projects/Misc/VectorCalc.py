@@ -1,3 +1,11 @@
+"""
+Experimental Tkinter UI prototype with 3D visualization with matplotlib.
+
+The original command-line calculator was written independently.
+This interface and 3D visualization was generated with AI assistance and will be
+rewritten as I learn more about Tkinter and matplotlib.
+matplotlib is required to run this program
+"""
 import math
 import tkinter as tk
 from tkinter import ttk, messagebox
