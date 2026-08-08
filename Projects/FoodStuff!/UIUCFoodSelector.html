@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOOD SELECTOR // Campustown Unit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1220;
+    --panel: #101B2D;
+    --panel-raised: #16233A;
+    --grid-line: #1E3A5F;
+    --steel: #26385A;
+    --illini-blue: #13294B;
+    --illini-orange: #E84A27;
+    --illini-orange-dim: #B33A1E;
+    --amber: #FFB020;
+    --paper: #F2ECDD;
+    --paper-dim: #9FA8B8;
+    --danger: #FF5A3C;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+  }
+
+  body {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    background-color: var(--bg);
+    padding: 20px 14px 60px;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    border: 2px solid var(--steel);
+    background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+    padding: 18px 20px;
+    position: relative;
+    margin-bottom: 16px;
+  }
+  header::before {
+    content: "";
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px dashed rgba(159,168,184,0.25);
+    pointer-events: none;
+  }
+  .plate-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--illini-orange);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 7vw, 44px);
+    line-height: 0.95;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px 0;
+    color: var(--paper);
+    text-transform: uppercase;
+  }
+  h1 span { color: var(--illini-orange); }
+  .subtitle {
+    font-size: 13px;
+    color: var(--paper-dim);
+    max-width: 46ch;
+    line-height: 1.5;
+  }
+  .serial {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-size: 10px;
+    color: var(--steel);
+    letter-spacing: 1px;
+  }
+
+  /* ---------- PANEL ---------- */
+  .panel {
+    border: 2px solid var(--steel);
+    background: var(--panel);
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--grid-line);
+    padding-bottom: 8px;
+  }
+  .panel-title {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--paper-dim);
+    text-transform: uppercase;
+  }
+  .panel-tag {
+    font-size: 10px;
+    color: var(--steel);
+  }
+
+  /* ---------- CATEGORY SWITCHES ---------- */
+  .switch-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  @media (min-width: 480px) {
+    .switch-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .switch {
+    position: relative;
+    border: 1.5px solid var(--steel);
+    background: var(--panel-raised);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 10px 10px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .switch .num {
+    font-size: 10px;
+    color: var(--steel);
+    letter-spacing: 1px;
+  }
+  .switch:hover { border-color: var(--illini-orange-dim); }
+  .switch:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .switch.active {
+    background: var(--illini-blue);
+    border-color: var(--illini-orange);
+  }
+  .switch.active .num { color: var(--illini-orange); }
+  .switch.active::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 4px;
+    background: var(--illini-orange);
+  }
+
+  /* ---------- MASTER RANDOM ---------- */
+  .master-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--grid-line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .master-switch {
+    width: 100%;
+    border: 1.5px dashed var(--danger);
+    background: rgba(255,90,60,0.06);
+    color: var(--danger);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s ease;
+  }
+  .master-switch:hover { background: rgba(255,90,60,0.14); }
+  .master-switch.active {
+    background: var(--danger);
+    color: var(--bg);
+  }
+
+  .dining-switch {
+    width: 100%;
+    border: 1.5px dashed var(--amber);
+    background: rgba(255,176,32,0.06);
+    color: var(--amber);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s ease;
+  }
+  .dining-switch:hover { background: rgba(255,176,32,0.14); }
+  .dining-switch.active {
+    background: var(--amber);
+    color: var(--bg);
+  }
+  .dining-switch:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  /* ---------- GENERATE LEVER ---------- */
+  .lever-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 4px;
+  }
+  .lever {
+    width: 100%;
+    max-width: 320px;
+    background: var(--illini-orange);
+    color: var(--bg);
+    border: none;
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--illini-orange-dim);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  .lever:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--illini-orange-dim);
+  }
+  .lever:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .lever:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  /* ---------- READOUT ---------- */
+  .readout {
+    border: 2px solid var(--steel);
+    background: #050B14;
+    padding: 22px 18px;
+    margin-top: 16px;
+    min-height: 150px;
+    position: relative;
+    overflow: hidden;
+  }
+  .readout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255,176,32,0.03) 0px,
+      rgba(255,176,32,0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+  }
+  .readout-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--steel);
+    margin-bottom: 10px;
+  }
+  .readout-empty {
+    color: var(--steel);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .readout-name {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: clamp(26px, 6vw, 36px);
+    color: var(--amber);
+    text-shadow: 0 0 14px rgba(255,176,32,0.35);
+    line-height: 1.05;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    word-break: break-word;
+  }
+  .readout-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .chip {
+    border: 1px solid var(--steel);
+    color: var(--paper-dim);
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    text-transform: uppercase;
+  }
+  .chip.cuisine { border-color: var(--illini-orange); color: var(--illini-orange); }
+
+  .readout-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .mini-btn {
+    background: transparent;
+    border: 1px solid var(--steel);
+    color: var(--paper-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .mini-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .mini-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  footer {
+    text-align: center;
+    font-size: 10.5px;
+    color: var(--steel);
+    margin-top: 24px;
+    line-height: 1.7;
+    letter-spacing: 0.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lever, .switch, .mini-btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="serial">UNIT 61801-GS</div>
+    <div class="plate-label">CAMPUSTOWN DINING DISPATCH</div>
+    <h1>FOOD<br><span>SELECTOR</span></h1>
+    <div class="subtitle">Pick a cuisine, or throw the master switch for anything on the board — Green Street, campustown, and the UIUC dining halls.</div>
+  </header>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Select Category</div>
+      <div class="panel-tag" id="selCount">0 / 6 armed</div>
+    </div>
+    <div class="switch-grid" id="switchGrid"></div>
+    <div class="master-row">
+      <button class="master-switch" id="masterBtn" type="button" aria-pressed="false">Master Random — Any Spot, Any Cuisine</button>
+      <button class="dining-switch" id="diningBtn" type="button" aria-pressed="false">Dining Hall Only — Ikenberry, ISR, PAR, Lincoln/Allen</button>
+    </div>
+  </div>
+
+  <div class="lever-wrap">
+    <button class="lever" id="generateBtn" type="button">Generate</button>
+  </div>
+
+  <div class="readout" role="status" aria-live="polite">
+    <div class="readout-label">READOUT</div>
+    <div id="readoutBody">
+      <div class="readout-empty">Standing by. Select a category — or arm master random — then hit GENERATE.</div>
+    </div>
+  </div>
+
+  <footer>
+    Spots compiled from Green Street / campustown listings and UIUC Housing dining pages.<br>
+    Hours and openings change — double check before you walk over.
+  </footer>
+
+</div>
+
+<script>
+  // ---------- DATA ----------
+  // type: "Green St" | "Campustown" | "Dining Hall"
+  const DATA = {
+    "Asian": [
+      { name: "Sakanaya", type: "Green St", note: "Sushi & Japanese" },
+      { name: "SGD Dubu", type: "Green St", note: "Korean tofu soup" },
+      { name: "Golden Harbor", type: "Campustown", note: "Chinese" },
+      { name: "Oozu Ramen Bar", type: "Green St", note: "Ramen" },
+      { name: "Chopstix", type: "Green St", note: "Chinese" },
+      { name: "Savory Hotpot House", type: "Green St", note: "Hot pot" },
+      { name: "Dim Sum House", type: "Green St", note: "Dim sum" },
+      { name: "Northern Cuisine", type: "Campustown", note: "Chinese" },
+      { name: "K Bowl", type: "Campustown", note: "Korean" },
+      { name: "bb.q Chicken", type: "Campustown", note: "Korean fried chicken" },
+      { name: "Poke Lab", type: "Green St", note: "Poke" },
+      { name: "Taste of Asia", type: "Dining Hall", note: "ISR micro-restaurant" }
+    ],
+    "Mexican": [
+      { name: "Chipotle Mexican Grill", type: "Green St", note: "Fast casual" },
+      { name: "Huaraches Moroleon", type: "Campustown", note: "Mexican" },
+      { name: "Fernando's Food", type: "Campustown", note: "Mexican" },
+      { name: "Dos Reales Mexican Restaurant", type: "Campustown", note: "Sit-down" },
+      { name: "Tres Nopales", type: "Campustown", note: "Mexican" },
+      { name: "Fiesta Cafe", type: "Campustown", note: "Mexican" },
+      { name: "Burrito King", type: "Campustown", note: "Burritos" },
+      { name: "Mo's Burritos", type: "Campustown", note: "Burritos" },
+      { name: "Cocina Mexicana", type: "Dining Hall", note: "ISR micro-restaurant" }
+    ],
+    "American": [
+      { name: "Black Dog Smoke & Ale House", type: "Campustown", note: "BBQ" },
+      { name: "Baxters American Grille", type: "Green St", note: "Steaks & grill" },
+      { name: "Seven Saints", type: "Green St", note: "Burgers & bar food" },
+      { name: "Farren's", type: "Green St", note: "Pub fare" },
+      { name: "Legends", type: "Green St", note: "American" },
+      { name: "Signature Grill", type: "Green St", note: "Grill" },
+      { name: "Jurassic Grill", type: "Green St", note: "Grill" },
+      { name: "Fat Sandwich Company", type: "Green St", note: "Sandwiches" },
+      { name: "Neil St Blues", type: "Campustown", note: "American" },
+      { name: "Potbelly Sandwich Shop", type: "Green St", note: "Sandwiches" },
+      { name: "DP Dough", type: "Green St", note: "Calzones" },
+      { name: "Cracked on Green", type: "Green St", note: "Breakfast" },
+      { name: "Don's Chophouse", type: "Dining Hall", note: "Ikenberry micro-restaurant" }
+    ],
+    "Italian": [
+      { name: "Nando Milano Trattoria", type: "Green St", note: "Italian" },
+      { name: "Napoli's Italian Restaurant", type: "Campustown", note: "Italian" },
+      { name: "Penne Lane", type: "Dining Hall", note: "Ikenberry micro-restaurant" }
+    ],
+    "Indian & South Asian": [
+      { name: "Kohinoor Indian Restaurant and Lounge", type: "Campustown", note: "Indian" },
+      { name: "Annapurna Stores", type: "Green St", note: "South Asian grocery & food" }
+    ],
+    "Bakery, Cafe & Snacks": [
+      { name: "Green Street Cafe", type: "Green St", note: "Cafe" },
+      { name: "The Bread Company", type: "Green St", note: "Bakery" },
+      { name: "Berries and Flour", type: "Green St", note: "Bakery" },
+      { name: "Tiger Sugar", type: "Green St", note: "Boba" }
+    ]
+  };
+
+  const CATEGORY_ORDER = Object.keys(DATA);
+  let selected = new Set();
+  let masterOn = false;
+  let diningOnly = false;
+
+  // ---------- BUILD SWITCHES ----------
+  const grid = document.getElementById("switchGrid");
+  CATEGORY_ORDER.forEach((cat, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "switch";
+    btn.setAttribute("aria-pressed", "false");
+    btn.dataset.cat = cat;
+    btn.innerHTML = `<span class="num">SW-0${i + 1}</span><span>${cat}</span>`;
+    btn.addEventListener("click", () => toggleCategory(cat, btn));
+    grid.appendChild(btn);
+  });
+
+  function toggleCategory(cat, btn) {
+    if (masterOn) setMaster(false);
+    if (diningOnly) setDiningOnly(false);
+    if (selected.has(cat)) {
+      selected.delete(cat);
+      btn.classList.remove("active");
+      btn.setAttribute("aria-pressed", "false");
+    } else {
+      selected.add(cat);
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+    }
+    updateCount();
+  }
+
+  function updateCount() {
+    document.getElementById("selCount").textContent =
+      selected.size + " / " + CATEGORY_ORDER.length + " armed";
+  }
+
+  const masterBtn = document.getElementById("masterBtn");
+  masterBtn.addEventListener("click", () => {
+    if (diningOnly) setDiningOnly(false);
+    setMaster(!masterOn);
+  });
+
+  function setMaster(on) {
+    masterOn = on;
+    masterBtn.classList.toggle("active", on);
+    masterBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    if (on) {
+      selected.clear();
+      document.querySelectorAll(".switch").forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      updateCount();
+    }
+  }
+
+  const diningBtn = document.getElementById("diningBtn");
+  diningBtn.addEventListener("click", () => {
+    if (masterOn) setMaster(false);
+    setDiningOnly(!diningOnly);
+  });
+
+  function setDiningOnly(on) {
+    diningOnly = on;
+    diningBtn.classList.toggle("active", on);
+    diningBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    if (on) {
+      selected.clear();
+      document.querySelectorAll(".switch").forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      updateCount();
+    }
+  }
+
+  // ---------- GENERATE ----------
+  const generateBtn = document.getElementById("generateBtn");
+  const readoutBody = document.getElementById("readoutBody");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  generateBtn.addEventListener("click", () => {
+    let pool = [];
+    if (diningOnly) {
+      CATEGORY_ORDER.forEach(cat => {
+        DATA[cat].forEach(spot => {
+          if (spot.type === "Dining Hall") pool.push({ ...spot, cuisine: cat });
+        });
+      });
+    } else if (masterOn) {
+      CATEGORY_ORDER.forEach(cat => {
+        DATA[cat].forEach(spot => pool.push({ ...spot, cuisine: cat }));
+      });
+    } else if (selected.size > 0) {
+      selected.forEach(cat => {
+        DATA[cat].forEach(spot => pool.push({ ...spot, cuisine: cat }));
+      });
+    } else {
+      readoutBody.innerHTML = `<div class="readout-empty">No category armed. Pick at least one switch, or hit master random.</div>`;
+      return;
+    }
+
+    const finalPick = pool[Math.floor(Math.random() * pool.length)];
+
+    if (prefersReducedMotion) {
+      renderResult(finalPick);
+      return;
+    }
+
+    generateBtn.disabled = true;
+    let ticks = 0;
+    const maxTicks = 14;
+    const interval = setInterval(() => {
+      const scramble = pool[Math.floor(Math.random() * pool.length)];
+      renderResult(scramble, true);
+      ticks++;
+      if (ticks >= maxTicks) {
+        clearInterval(interval);
+        renderResult(finalPick);
+        generateBtn.disabled = false;
+      }
+    }, 55);
+  });
+
+  function renderResult(spot, scrambling) {
+    readoutBody.innerHTML = `
+      <div class="readout-name">${spot.name}</div>
+      <div class="readout-meta">
+        <span class="chip cuisine">${spot.cuisine}</span>
+        <span class="chip">${spot.type}</span>
+        ${spot.note ? `<span class="chip">${spot.note}</span>` : ""}
+      </div>
+      ${!scrambling ? `
+      <div class="readout-actions">
+        <button class="mini-btn" id="rerollBtn" type="button">Reroll</button>
+        <button class="mini-btn" id="resetBtn" type="button">Reset Panel</button>
+      </div>` : ""}
+    `;
+    if (!scrambling) {
+      document.getElementById("rerollBtn").addEventListener("click", () => generateBtn.click());
+      document.getElementById("resetBtn").addEventListener("click", resetPanel);
+    }
+  }
+
+  function resetPanel() {
+    selected.clear();
+    masterOn = false;
+    diningOnly = false;
+    document.querySelectorAll(".switch").forEach(b => {
+      b.classList.remove("active");
+      b.setAttribute("aria-pressed", "false");
+    });
+    masterBtn.classList.remove("active");
+    masterBtn.setAttribute("aria-pressed", "false");
+    diningBtn.classList.remove("active");
+    diningBtn.setAttribute("aria-pressed", "false");
+    updateCount();
+    readoutBody.innerHTML = `<div class="readout-empty">Standing by. Select a category — or arm master random — then hit GENERATE.</div>`;
+  }
+</script>
+</body>
+</html>
